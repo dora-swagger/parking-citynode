@@ -11,6 +11,7 @@ tags:
   - name: parking
 schemes:
   - http
+basePath: /parking
 paths:
   /parking/bookings:
     get:
@@ -31,11 +32,6 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
         - name: sessionId
           in: header
           description: sessionId
@@ -75,11 +71,6 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Parking'
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
         - name: sessionId
           in: header
           description: sessionId
@@ -123,11 +114,6 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
         - name: sessionId
           in: header
           description: sessionId
@@ -163,11 +149,6 @@ paths:
           in: path
           description: bookingId
           required: true
-          type: string
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
           type: string
         - name: sessionId
           in: header
@@ -243,11 +224,6 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
         - name: If-Modified-Since
           in: header
           description: If-Modified-Since
@@ -300,25 +276,11 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
-        - name: If-Modified-Since
-          in: header
-          description: If-Modified-Since
-          required: false
-          type: string
       responses:
         '200':
           description: Ok
           schema:
             $ref: '#/definitions/CarPark'
-          headers:
-            Last-Modified:
-              type: string
-              description: Last-Modified
         '304':
           description: Not modified
         '400':
@@ -380,11 +342,6 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
       responses:
         '200':
           description: Ok
@@ -426,11 +383,6 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
       responses:
         '200':
           description: Ok
@@ -502,11 +454,6 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
         - name: If-Modified-Since
           in: header
           description: If-Modified-Since
@@ -559,25 +506,11 @@ paths:
           type: string
           default: low
           x-example: low
-        - name: Authorization
-          in: header
-          description: Authorization
-          required: false
-          type: string
-        - name: If-Modified-Since
-          in: header
-          description: If-Modified-Since
-          required: false
-          type: string
       responses:
         '200':
           description: Ok
           schema:
             $ref: '#/definitions/ParkingSpace'
-          headers:
-            Last-Modified:
-              type: string
-              description: Last-Modified
         '304':
           description: Not modified
         '400':
@@ -616,29 +549,28 @@ definitions:
         type: string
       name:
         type: string
-      type:
+      description:
         type: string
-        enum:
-          - CARSHARING_CAR
-          - CARSHARING_STATION
-          - EV_CHARGING_STATION
-          - BIKESHARING_STATION
-          - PARKING_SPACE
-          - TBD
-      location:
-        $ref: '#/definitions/Location'
       icon:
         $ref: '#/definitions/ExternalReference'
       trafficType:
         type: string
         enum:
-          - CAR
-          - BIKE
-          - WALK
-          - TRAIN
-          - BUS
-          - COACH
-          - FLIGHT
+          - car
+          - bicycle
+          - walk
+          - train
+          - bus
+          - coach
+          - flight
+          - wheelchair
+          - metro
+          - cityTrain
+          - tram
+          - regioTrain
+          - ferry
+          - other
+          - unkown
       uri:
         type: string
       timestamp:
@@ -649,6 +581,8 @@ definitions:
         default: false
       address:
         $ref: '#/definitions/Address'
+      location:
+        $ref: '#/definitions/PointLocation'
       operator:
         type: string
       network:
@@ -666,10 +600,13 @@ definitions:
     properties:
       url:
         type: string
-      uri:
-        type: string
       method:
         type: string
+        enum:
+          - get
+          - post
+          - put
+          - delete
   Parking:
     type: object
     required:
@@ -682,29 +619,28 @@ definitions:
         type: string
       name:
         type: string
-      type:
+      description:
         type: string
-        enum:
-          - CARSHARING_CAR
-          - CARSHARING_STATION
-          - EV_CHARGING_STATION
-          - BIKESHARING_STATION
-          - PARKING_SPACE
-          - TBD
-      location:
-        $ref: '#/definitions/Location'
       icon:
         $ref: '#/definitions/ExternalReference'
       trafficType:
         type: string
         enum:
-          - CAR
-          - BIKE
-          - WALK
-          - TRAIN
-          - BUS
-          - COACH
-          - FLIGHT
+          - car
+          - bicycle
+          - walk
+          - train
+          - bus
+          - coach
+          - flight
+          - wheelchair
+          - metro
+          - cityTrain
+          - tram
+          - regioTrain
+          - ferry
+          - other
+          - unkown
       uri:
         type: string
       timestamp:
@@ -715,6 +651,8 @@ definitions:
         default: false
       address:
         $ref: '#/definitions/Address'
+      location:
+        $ref: '#/definitions/PointLocation'
       operator:
         type: string
       network:
@@ -749,7 +687,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/LanguageDescription'
-  Location:
+  PointLocation:
     type: object
     required:
       - coordinates
@@ -758,12 +696,7 @@ definitions:
       type:
         type: string
         enum:
-          - POINT
-          - LINE_STRING
-          - POLYGON
-          - MULTI_POINT
-          - MULTI_LINE_STRING
-          - MULTI_POLYGON
+          - Point
       coordinates:
         type: object
   LanguageDescription:
@@ -775,8 +708,9 @@ definitions:
       lang:
         type: string
         enum:
-          - DE_DE
-          - EN_EN
+          - de
+          - en
+          - es
       description:
         type: object
   ParkingBooking:
@@ -798,29 +732,28 @@ definitions:
         type: string
       name:
         type: string
-      type:
+      description:
         type: string
-        enum:
-          - CARSHARING_CAR
-          - CARSHARING_STATION
-          - EV_CHARGING_STATION
-          - BIKESHARING_STATION
-          - PARKING_SPACE
-          - TBD
-      location:
-        $ref: '#/definitions/Location'
       icon:
         $ref: '#/definitions/ExternalReference'
       trafficType:
         type: string
         enum:
-          - CAR
-          - BIKE
-          - WALK
-          - TRAIN
-          - BUS
-          - COACH
-          - FLIGHT
+          - car
+          - bicycle
+          - walk
+          - train
+          - bus
+          - coach
+          - flight
+          - wheelchair
+          - metro
+          - cityTrain
+          - tram
+          - regioTrain
+          - ferry
+          - other
+          - unkown
       uri:
         type: string
       timestamp:
@@ -831,6 +764,8 @@ definitions:
         default: false
       address:
         $ref: '#/definitions/Address'
+      location:
+        $ref: '#/definitions/PointLocation'
       operator:
         type: string
       network:
