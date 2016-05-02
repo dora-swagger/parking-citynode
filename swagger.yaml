@@ -1,0 +1,848 @@
+swagger: '2.0'
+info:
+  description: descr
+  version: 1.0.0
+  title: DORA API
+  termsOfService: 'https://terms'
+  contact:
+    name: contact
+host: services.mock.dora-api.eu
+tags:
+  - name: parking
+schemes:
+  - http
+paths:
+  /parking/bookings:
+    get:
+      tags:
+        - parking
+      summary: /parking/bookings
+      description: get list of bookings
+      operationId: getBookingsParking
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: sessionId
+          in: header
+          description: sessionId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ParkingBooking'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      tags:
+        - parking
+      summary: /parking/bookings
+      description: book a parking place
+      operationId: bookParkingPlace
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Parking place that will be booked
+          required: true
+          schema:
+            $ref: '#/definitions/Parking'
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: sessionId
+          in: header
+          description: sessionId
+          required: true
+          type: string
+      responses:
+        '201':
+          description: created with Location Header for more Information and chancelation
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  '/parking/bookings/{bookingId}':
+    get:
+      tags:
+        - parking
+      summary: '/parking/bookings/{bookingId}'
+      description: get a booking
+      operationId: getBookingParking
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: bookingId
+          in: path
+          description: bookingId
+          required: true
+          type: string
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: sessionId
+          in: header
+          description: sessionId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/ParkingBooking'
+        '400':
+          description: Invalid ID supplied
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - parking
+      summary: '/parking/bookings/{bookingId}'
+      description: cancel a booking
+      operationId: cancelParkingPlace
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: bookingId
+          in: path
+          description: bookingId
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: sessionId
+          in: header
+          description: sessionId
+          required: true
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Invalid ID supplied
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /parking/carparks:
+    get:
+      tags:
+        - parking
+      summary: /parking/carparks
+      description: get list of parking carparks
+      operationId: getParkingCarParks
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: lat
+          in: query
+          description: latitude coordinates (wgs84). you have to set latitude together with radius and longitude
+          required: false
+          type: number
+          default: 52.4590335
+          format: float
+          x-example: 52.4590335
+        - name: lng
+          in: query
+          description: longitude coordinates (wgs84). you have to set longitude together with radius and latitude
+          required: false
+          type: number
+          default: 13.3738759
+          format: float
+          x-example: 13.3738759
+        - name: radius
+          in: query
+          description: radius in meter. you have to set radius together with latitude and longitude
+          required: false
+          type: number
+          default: 500
+          format: float
+          x-example: 500
+        - name: bbox
+          in: query
+          description: bounding box (wgs84). it is not possible to set a bounding box together with latitude/longitude/radius
+          required: false
+          type: string
+          x-example: '13.0882097323,52.3418234221,13.7606105539,52.6697240587'
+        - name: operators
+          in: query
+          description: operators
+          required: false
+          type: string
+          default: 'DriveNow,Car2Go'
+          x-example: 'DriveNow,Car2Go'
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: If-Modified-Since
+          in: header
+          description: If-Modified-Since
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CarPark'
+          headers:
+            Last-Modified:
+              type: string
+              description: Last-Modified
+        '304':
+          description: Not Modified
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  '/parking/carparks/{carparkId}':
+    get:
+      tags:
+        - parking
+      summary: '/parking/carparks/{carparkId}'
+      description: get detail of one parking carpark
+      operationId: getParkingCarPark
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: carparkId
+          in: path
+          description: carparkId
+          required: true
+          type: string
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: If-Modified-Since
+          in: header
+          description: If-Modified-Since
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/CarPark'
+          headers:
+            Last-Modified:
+              type: string
+              description: Last-Modified
+        '304':
+          description: Not modified
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /parking/operators:
+    get:
+      tags:
+        - parking
+      summary: /parking/operators
+      description: get list of parking operators
+      operationId: getParkingOperators
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: lat
+          in: query
+          description: latitude coordinates (wgs84). you have to set latitude together with radius and longitude
+          required: false
+          type: number
+          default: 52.4590335
+          format: float
+          x-example: 52.4590335
+        - name: lng
+          in: query
+          description: longitude coordinates (wgs84). you have to set longitude together with radius and latitude
+          required: false
+          type: number
+          default: 13.3738759
+          format: float
+          x-example: 13.3738759
+        - name: radius
+          in: query
+          description: radius in meter. you have to set radius together with latitude and longitude
+          required: false
+          type: number
+          default: 500
+          format: float
+          x-example: 500
+        - name: bbox
+          in: query
+          description: bounding box (wgs84). it is not possible to set a bounding box together with latitude/longitude/radius
+          required: false
+          type: string
+          x-example: '13.0882097323,52.3418234221,13.7606105539,52.6697240587'
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ParkingOperator'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  '/parking/operators/{operatorId}':
+    get:
+      tags:
+        - parking
+      summary: '/parking/operators/{operatorId}'
+      description: get detail of one parking operator
+      operationId: getParkingOperator
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: operatorId
+          in: path
+          description: operatorId
+          required: true
+          type: string
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/ParkingOperator'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /parking/spaces:
+    get:
+      tags:
+        - parking
+      summary: /parking/spaces
+      description: get list of parking spaces
+      operationId: getParkingPlaces
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: lat
+          in: query
+          description: latitude coordinates (wgs84). you have to set latitude together with radius and longitude
+          required: false
+          type: number
+          default: 52.4590335
+          format: float
+          x-example: 52.4590335
+        - name: lng
+          in: query
+          description: longitude coordinates (wgs84). you have to set longitude together with radius and latitude
+          required: false
+          type: number
+          default: 13.3738759
+          format: float
+          x-example: 13.3738759
+        - name: radius
+          in: query
+          description: radius in meter. you have to set radius together with latitude and longitude
+          required: false
+          type: number
+          default: 500
+          format: float
+          x-example: 500
+        - name: bbox
+          in: query
+          description: bounding box (wgs84). it is not possible to set a bounding box together with latitude/longitude/radius
+          required: false
+          type: string
+          x-example: '13.0882097323,52.3418234221,13.7606105539,52.6697240587'
+        - name: operators
+          in: query
+          description: operators
+          required: false
+          type: string
+          default: 'DriveNow,Car2Go'
+          x-example: 'DriveNow,Car2Go'
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: If-Modified-Since
+          in: header
+          description: If-Modified-Since
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ParkingSpace'
+          headers:
+            Last-Modified:
+              type: string
+              description: Last-Modified
+        '304':
+          description: Not Modified
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  '/parking/spaces/{spaceId}':
+    get:
+      tags:
+        - parking
+      summary: '/parking/spaces/{spaceId}'
+      description: get detail of one parking space
+      operationId: getParkingPlace
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: spaceId
+          in: path
+          description: spaceId
+          required: true
+          type: string
+        - name: detail
+          in: query
+          description: 'low,medium,high'
+          required: false
+          type: string
+          default: low
+          x-example: low
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: false
+          type: string
+        - name: If-Modified-Since
+          in: header
+          description: If-Modified-Since
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/ParkingSpace'
+          headers:
+            Last-Modified:
+              type: string
+              description: Last-Modified
+        '304':
+          description: Not modified
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  ParkingOperator:
+    type: object
+    required:
+      - businessArea
+      - name
+      - pricingModel
+    properties:
+      name:
+        type: object
+      pricingModel:
+        type: object
+      businessArea:
+        type: object
+  CarPark:
+    type: object
+    required:
+      - id
+      - location
+      - name
+      - operator
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+        enum:
+          - CARSHARING_CAR
+          - CARSHARING_STATION
+          - EV_CHARGING_STATION
+          - BIKESHARING_STATION
+          - PARKING_SPACE
+          - TBD
+      location:
+        $ref: '#/definitions/Location'
+      icon:
+        $ref: '#/definitions/ExternalReference'
+      trafficType:
+        type: string
+        enum:
+          - CAR
+          - BIKE
+          - WALK
+          - TRAIN
+          - BUS
+          - COACH
+          - FLIGHT
+      uri:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+      deleted:
+        type: boolean
+        default: false
+      address:
+        $ref: '#/definitions/Address'
+      operator:
+        type: string
+      network:
+        type: object
+      booking:
+        $ref: '#/definitions/ExternalReference'
+      status:
+        type: object
+      free:
+        type: object
+      occupied:
+        type: object
+  ExternalReference:
+    type: object
+    properties:
+      url:
+        type: string
+      uri:
+        type: string
+      method:
+        type: string
+  Parking:
+    type: object
+    required:
+      - id
+      - location
+      - name
+      - operator
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+        enum:
+          - CARSHARING_CAR
+          - CARSHARING_STATION
+          - EV_CHARGING_STATION
+          - BIKESHARING_STATION
+          - PARKING_SPACE
+          - TBD
+      location:
+        $ref: '#/definitions/Location'
+      icon:
+        $ref: '#/definitions/ExternalReference'
+      trafficType:
+        type: string
+        enum:
+          - CAR
+          - BIKE
+          - WALK
+          - TRAIN
+          - BUS
+          - COACH
+          - FLIGHT
+      uri:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+      deleted:
+        type: boolean
+        default: false
+      address:
+        $ref: '#/definitions/Address'
+      operator:
+        type: string
+      network:
+        type: object
+      booking:
+        $ref: '#/definitions/ExternalReference'
+      status:
+        type: object
+  Address:
+    type: object
+    required:
+      - city
+      - country
+      - district
+      - houseNo
+      - postalCode
+      - street
+    properties:
+      street:
+        type: string
+      houseNo:
+        type: string
+      postalCode:
+        type: string
+      city:
+        type: string
+      district:
+        type: string
+      country:
+        type: string
+      description:
+        type: array
+        items:
+          $ref: '#/definitions/LanguageDescription'
+  Location:
+    type: object
+    required:
+      - coordinates
+      - type
+    properties:
+      type:
+        type: string
+        enum:
+          - POINT
+          - LINE_STRING
+          - POLYGON
+          - MULTI_POINT
+          - MULTI_LINE_STRING
+          - MULTI_POLYGON
+      coordinates:
+        type: object
+  LanguageDescription:
+    type: object
+    required:
+      - description
+      - lang
+    properties:
+      lang:
+        type: string
+        enum:
+          - DE_DE
+          - EN_EN
+      description:
+        type: object
+  ParkingBooking:
+    type: object
+    required:
+      - tbd
+    properties:
+      tbd:
+        type: object
+  ParkingSpace:
+    type: object
+    required:
+      - id
+      - location
+      - name
+      - operator
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+        enum:
+          - CARSHARING_CAR
+          - CARSHARING_STATION
+          - EV_CHARGING_STATION
+          - BIKESHARING_STATION
+          - PARKING_SPACE
+          - TBD
+      location:
+        $ref: '#/definitions/Location'
+      icon:
+        $ref: '#/definitions/ExternalReference'
+      trafficType:
+        type: string
+        enum:
+          - CAR
+          - BIKE
+          - WALK
+          - TRAIN
+          - BUS
+          - COACH
+          - FLIGHT
+      uri:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+      deleted:
+        type: boolean
+        default: false
+      address:
+        $ref: '#/definitions/Address'
+      operator:
+        type: string
+      network:
+        type: object
+      booking:
+        $ref: '#/definitions/ExternalReference'
+      status:
+        type: object
+  Error:
+    type: object
+    required:
+      - tbd
+    properties:
+      tbd:
+        type: object
