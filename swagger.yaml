@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "descr abc123 mit githup edit",
+    "description": "descr abc123 mit githup edit - später bearbeitet 1111 :-)",
     "version": "1.0.0",
     "title": "DORA API",
     "termsOfService": "https://terms",
@@ -19,7 +19,7 @@
     "http"
   ],
   "paths": {
-    "/parking/bookings": {
+    "/parking/bookings2": {
       "get": {
         "tags": [
           "parking"
