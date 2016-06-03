@@ -32,6 +32,13 @@ paths:
           type: string
           default: low
           x-example: low
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: sessionId
           in: header
           description: sessionId
@@ -71,6 +78,13 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Parking'
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: sessionId
           in: header
           description: sessionId
@@ -114,6 +128,13 @@ paths:
           type: string
           default: low
           x-example: low
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: sessionId
           in: header
           description: sessionId
@@ -150,6 +171,13 @@ paths:
           description: bookingId
           required: true
           type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: sessionId
           in: header
           description: sessionId
@@ -224,6 +252,13 @@ paths:
           type: string
           default: low
           x-example: low
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: If-Modified-Since
           in: header
           description: If-Modified-Since
@@ -269,6 +304,13 @@ paths:
           description: carparkId
           required: true
           type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: detail
           in: query
           description: 'low,medium,high'
@@ -335,6 +377,13 @@ paths:
           required: false
           type: string
           x-example: '13.0882097323,52.3418234221,13.7606105539,52.6697240587'
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: detail
           in: query
           description: 'low,medium,high'
@@ -376,6 +425,13 @@ paths:
           description: operatorId
           required: true
           type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: detail
           in: query
           description: 'low,medium,high'
@@ -454,6 +510,13 @@ paths:
           type: string
           default: low
           x-example: low
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: If-Modified-Since
           in: header
           description: If-Modified-Since
@@ -499,6 +562,13 @@ paths:
           description: spaceId
           required: true
           type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          type: string
+          default: en-EN
+          x-example: de-DE
         - name: detail
           in: query
           description: 'low,medium,high'
@@ -527,12 +597,12 @@ definitions:
   ParkingOperator:
     type: object
     required:
-      - businessArea
-      - name
-      - pricingModel
+      - id
     properties:
+      id:
+        type: string
       name:
-        type: object
+        type: string
       pricingModel:
         type: object
       businessArea:
@@ -541,18 +611,36 @@ definitions:
     type: object
     required:
       - id
-      - location
       - name
-      - operator
+      - operatorId
     properties:
       id:
         type: string
       name:
         type: string
+      dataType:
+        type: string
+        default: tbd
+        enum:
+          - carsharingCar
+          - carsharingStation
+          - EVChargingStation
+          - bikesharingStation
+          - parkingSpace
+          - waitingTime
+          - TBD
       description:
         type: string
-      icon:
-        $ref: '#/definitions/ExternalReference'
+      imageId:
+        type: string
+      uri:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+      removed:
+        type: boolean
+        default: false
       trafficType:
         type: string
         enum:
@@ -571,22 +659,14 @@ definitions:
           - ferry
           - other
           - unkown
-      uri:
-        type: string
-      timestamp:
-        type: string
-        format: date-time
-      deleted:
-        type: boolean
-        default: false
       address:
         $ref: '#/definitions/Address'
       location:
         $ref: '#/definitions/PointLocation'
-      operator:
+      operatorId:
         type: string
-      network:
-        type: object
+      networkId:
+        type: string
       booking:
         $ref: '#/definitions/ExternalReference'
       status:
@@ -611,18 +691,36 @@ definitions:
     type: object
     required:
       - id
-      - location
       - name
-      - operator
+      - operatorId
     properties:
       id:
         type: string
       name:
         type: string
+      dataType:
+        type: string
+        default: tbd
+        enum:
+          - carsharingCar
+          - carsharingStation
+          - EVChargingStation
+          - bikesharingStation
+          - parkingSpace
+          - waitingTime
+          - TBD
       description:
         type: string
-      icon:
-        $ref: '#/definitions/ExternalReference'
+      imageId:
+        type: string
+      uri:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+      removed:
+        type: boolean
+        default: false
       trafficType:
         type: string
         enum:
@@ -641,22 +739,14 @@ definitions:
           - ferry
           - other
           - unkown
-      uri:
-        type: string
-      timestamp:
-        type: string
-        format: date-time
-      deleted:
-        type: boolean
-        default: false
       address:
         $ref: '#/definitions/Address'
       location:
         $ref: '#/definitions/PointLocation'
-      operator:
+      operatorId:
         type: string
-      network:
-        type: object
+      networkId:
+        type: string
       booking:
         $ref: '#/definitions/ExternalReference'
       status:
@@ -671,6 +761,8 @@ definitions:
       - postalCode
       - street
     properties:
+      description:
+        type: string
       street:
         type: string
       houseNo:
@@ -683,10 +775,6 @@ definitions:
         type: string
       country:
         type: string
-      description:
-        type: array
-        items:
-          $ref: '#/definitions/LanguageDescription'
   PointLocation:
     type: object
     required:
@@ -699,20 +787,6 @@ definitions:
           - Point
       coordinates:
         type: object
-  LanguageDescription:
-    type: object
-    required:
-      - description
-      - lang
-    properties:
-      lang:
-        type: string
-        enum:
-          - de
-          - en
-          - es
-      description:
-        type: object
   ParkingBooking:
     type: object
     required:
@@ -724,18 +798,36 @@ definitions:
     type: object
     required:
       - id
-      - location
       - name
-      - operator
+      - operatorId
     properties:
       id:
         type: string
       name:
         type: string
+      dataType:
+        type: string
+        default: tbd
+        enum:
+          - carsharingCar
+          - carsharingStation
+          - EVChargingStation
+          - bikesharingStation
+          - parkingSpace
+          - waitingTime
+          - TBD
       description:
         type: string
-      icon:
-        $ref: '#/definitions/ExternalReference'
+      imageId:
+        type: string
+      uri:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+      removed:
+        type: boolean
+        default: false
       trafficType:
         type: string
         enum:
@@ -754,22 +846,14 @@ definitions:
           - ferry
           - other
           - unkown
-      uri:
-        type: string
-      timestamp:
-        type: string
-        format: date-time
-      deleted:
-        type: boolean
-        default: false
       address:
         $ref: '#/definitions/Address'
       location:
         $ref: '#/definitions/PointLocation'
-      operator:
+      operatorId:
         type: string
-      network:
-        type: object
+      networkId:
+        type: string
       booking:
         $ref: '#/definitions/ExternalReference'
       status:
